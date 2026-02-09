@@ -31,7 +31,7 @@ export default function LandingAll() {
       <div className="row justify-content-center g-4">
 
         <div className="col-md-12">
-          <Link to="/landing/?token=&lang=&def=&type=DAILY" className="text-decoration-none text-dark">
+          <Link to="/?token=&lang=&def=&type=DAILY" className="text-decoration-none text-dark">
             <div className="card text-center h-100">
               <img
                 src="/Daily.png"
@@ -46,7 +46,7 @@ export default function LandingAll() {
         </div>
 
         <div className="col-md-12">
-          <Link to="/landing/?token=&lang=&def=&type=WEEKLY" className="text-decoration-none text-dark">
+          <Link to="/?token=&lang=&def=&type=WEEKLY" className="text-decoration-none text-dark">
             <div className="card text-center h-100">
               <img
                 src="/Weekly.png"
@@ -61,7 +61,7 @@ export default function LandingAll() {
         </div>
 
         <div className="col-md-12">
-          <Link to="/landing/?token=&lang=&def=&type=MONTHLY" className="text-decoration-none text-dark">
+          <Link to="/?token=&lang=&def=&type=MONTHLY" className="text-decoration-none text-dark">
             <div className="card text-center h-100">
               <img
                 src="/Monthly.png"

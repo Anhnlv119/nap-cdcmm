@@ -6,7 +6,7 @@ const token = params.get("token") || localStorage.getItem("token");
   const type = params.get("type");
 
   const buildUrl = (t) =>
-    `/landing?type=${t}${token ? `&token=${token}` : ""}`;
+    `/?type=${t}${token ? `&token=${token}` : ""}`;
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">

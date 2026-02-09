@@ -1,13 +1,13 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import LandingAll from "../pages/landingAll";
 
 const router = createBrowserRouter([
+  // {
+  //   path: "/",
+  //   loader: () => redirect("/?type=ALL"),
+  // },
   {
     path: "/",
-    loader: () => redirect("/landing?type=ALL"),
-  },
-  {
-    path: "/landing",
     element: <LandingAll />,
   },
 ]);
