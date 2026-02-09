@@ -63,7 +63,7 @@ function Monthly() {
                   alt="Monthly"
                 />
                 <div className="card-body">
-                  <h5 className="card-title">BUY</h5>
+                  <h5 className="card-title">SUBSCRIBE NOW</h5>
                 </div>
               </div>
             </button>
