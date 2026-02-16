@@ -26,7 +26,7 @@ export default function LandingAll() {
 
       const data = await res.json();
 
-      if (data.status === "success") {
+      if (data.success === "true") {
         const {
           access_token,
         } = data;

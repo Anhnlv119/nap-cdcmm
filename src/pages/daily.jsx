@@ -19,7 +19,7 @@ function Daily() {
  
          const data = await res.json();
  
-         if (data.status === "success") {
+         if (data.success === "true") {
            localStorage.setItem("access_token", data.access_token);
            console.log("Auto login success");
  
