@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import DAILY from "./daily";
 import WEEKLY from "./weekly";
 import MONTHLY from "./monthly";
+import { useEffect } from "react";
 
 export default function LandingAll() {
    const [params] = useSearchParams();
@@ -11,9 +12,35 @@ export default function LandingAll() {
   const type = params.get("type") || "ALL";
   const token = params.get("token");
 
-  if (token) {
+  useEffect(() => {
+  if (!token) return;
     localStorage.setItem("token", token);
-  }
+  const autoLogin = async () => {
+    try {
+      const res = await fetch(
+        `https://tank-war.mascom.vn/api/auth/gateway/auto-login?token=${token}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        const {
+          access_token,
+        } = data;
+        localStorage.setItem("access_token", access_token);
+        console.log("Auto login success");
+      } else {
+        console.error("Auto login failed", data);
+      }
+    } catch (error) {
+      console.error("Auto login error", error);
+    }
+  };
+  autoLogin();
+}, [token]);
 
   switch (type) {
     case 'DAILY':

@@ -1,30 +1,66 @@
 import { useSearchParams } from "react-router-dom";
 import Header from "./Header";
+import { useEffect } from "react";
 
 function Monthly() {
   const [params] = useSearchParams();
-
   const token = params.get("token") || localStorage.getItem("token");
+  const access_token = localStorage.getItem("access_token");
+
+  useEffect(() => {
+    if (!token || access_token) return;
+
+    const autoLogin = async () => {
+      try {
+        const res = await fetch(
+          `https://tank-war.mascom.vn/api/auth/gateway/auto-login?token=${token}`,
+          { method: "GET" }
+        );
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+          localStorage.setItem("access_token", data.access_token);
+          console.log("Auto login success");
+
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        } else {
+          console.error("Auto login failed", data);
+        }
+      } catch (err) {
+        console.error("Auto login error", err);
+      }
+    };
+
+    autoLogin();
+  }, [token, access_token]);
 
   const handleClickBuy = async () => {
-    if (!token) {
-      alert("Cannot buy package: missing token");
+    if (!access_token) {
+      alert("You are not logged in");
       return;
     }
 
     const body = {
-      token: token,
       packageId: "p_14",
     };
 
     try {
-      const res = await fetch("https://YOUR_API_DOMAIN/packages/buy-token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      const res = await fetch(
+        "https://tank-war.mascom.vn/api/package/packages/buy",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + access_token,
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       const data = await res.json();
 
@@ -32,7 +68,6 @@ function Monthly() {
         throw new Error(data.message || "Buy package failed");
       }
 
-      console.log("BUY SUCCESS:", data);
       alert("Buy package success!");
 
       setTimeout(() => {
@@ -40,8 +75,7 @@ function Monthly() {
           "mytel://webgamemyid?ref=http%3A%2F%2Ftelco-gw.mascom.vn%2Fgateway-service%2Fv1%2Fgame%2Fsuper-app%2Flogin%3Fgame-code%3DTANKS";
       }, 500);
     } catch (err) {
-      console.error(err);
-      alert("Fall buy package: " + err.message);
+      alert("Fail buy package: " + err.message);
     }
   };
 
