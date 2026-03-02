@@ -19,8 +19,8 @@ function Monthly() {
 
         const data = await res.json();
 
-        if (data.success === "true") {
-          localStorage.setItem("access_token", data.access_token);
+        if (data.data.status === "success") {
+          localStorage.setItem("access_token", data.data.access_token);
           console.log("Auto login success");
 
           window.history.replaceState(
@@ -47,6 +47,7 @@ function Monthly() {
 
     const body = {
       packageId: "p_14",
+      client: "WEB"
     };
 
     try {
