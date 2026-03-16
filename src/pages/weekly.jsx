@@ -19,7 +19,7 @@ function Weekly() {
   
           const data = await res.json();
   
-          if (data.data.status === "success") {
+          if (data.data.errorCode === "000000") {
             localStorage.setItem("access_token", data.data.access_token);
             console.log("Auto login success");
   

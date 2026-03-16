@@ -1,53 +1,69 @@
 import { useSearchParams } from "react-router-dom";
 import Header from "./Header";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-function Monthly() {
+function Weekly() {
   const [params] = useSearchParams();
   const token = params.get("token") || localStorage.getItem("token");
-  const access_token = localStorage.getItem("access_token");
+
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem("access_token")
+  );
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token || access_token) return;
-
     const autoLogin = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      if (accessToken) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch(
-          `https://tank-war.mascom.vn/api/auth/gateway/auto-login?token=${token}`,
-          { method: "GET" }
+          `https://tank-war.mascom.vn/api/auth/gateway/auto-login?token=${token}`
         );
 
         const data = await res.json();
 
-        if (data.data.status === "success") {
+        if (data?.data?.errorCode === "000000") {
           localStorage.setItem("access_token", data.data.access_token);
-          console.log("Auto login success");
+          setAccessToken(data.data.access_token);
 
           window.history.replaceState(
             {},
             document.title,
             window.location.pathname
           );
+
+          console.log("Auto login success");
         } else {
           console.error("Auto login failed", data);
         }
       } catch (err) {
         console.error("Auto login error", err);
       }
+
+      setLoading(false);
     };
 
     autoLogin();
-  }, [token, access_token]);
+  }, [token]);
 
   const handleClickBuy = async () => {
-    if (!access_token) {
+    if (!accessToken) {
       alert("You are not logged in");
       return;
     }
 
     const body = {
-      packageId: "p_14",
-      client: "WEB"
+      packageId: "p_15",
+      client: "WEB",
     };
 
     try {
@@ -57,7 +73,7 @@ function Monthly() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + access_token,
+            Authorization: "Bearer " + accessToken,
           },
           body: JSON.stringify(body),
         }
@@ -80,6 +96,14 @@ function Monthly() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="container text-center mt-5">
+        <h3>Loading...</h3>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <Header />
@@ -89,16 +113,20 @@ function Monthly() {
           <div className="col-md-12">
             <button
               onClick={handleClickBuy}
+              disabled={!accessToken}
               className="text-decoration-none text-dark border-0 bg-transparent w-100"
             >
               <div className="card text-center h-100">
                 <img
-                  src="/Monthly.png"
+                  src="/Weekly.png"
                   className="card-img-top img-fluid"
-                  alt="Monthly"
+                  alt="Weekly"
                 />
+
                 <div className="card-body">
-                  <h5 className="card-title">SUBSCRIBE NOW</h5>
+                  <h5 className="card-title">
+                    {accessToken ? "SUBSCRIBE NOW" : "LOGIN REQUIRED"}
+                  </h5>
                 </div>
               </div>
             </button>
@@ -109,4 +137,4 @@ function Monthly() {
   );
 }
 
-export default Monthly;
+export default Weekly;
